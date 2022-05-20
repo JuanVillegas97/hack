@@ -1,26 +1,54 @@
-package source;
+
 //This class it's meant to be used in another class called Reader to give it more facilty and better administration program
-
 // Juan Eduardo Villegas Rios A00826615
-// Creation date 5/7/2022
-
+// Creation date 5/8/2022 //.m
+//.b=56
+//.d=2
 import java.io.File;
-import java.util.*;
 
+//*Things to do - Count every single line of each file then figure out the shit for same name
 public class MyFile {
- private String file_Name;
+ protected int t, i, b, d, m, a;
+ protected String category;
+ protected String file_Name;
  private File file;
 
  MyFile() {
+  this.a = 0;
+  this.t = 0;
+  this.i = 0;
+  this.b = 0;
+  this.d = 0;
+  this.m = 0;
+  this.category = "";
   this.file_Name = "";
  }
 
- protected File fileNameSet() { // Returns an object file meant to be read for an scanner
+ // .i
+ protected void print_() { // This function prints the desired output
+  System.out.println(
+    "\nNombre del archivo: " + file_Name + "Category: " + category
+      + "\n--------------------------------------------" +
+      "\nTOTAL: " + t +
+      "\nITEMS: " + i +
+      "\nBASE: " + b +
+      "\nDELETED: " + d +
+      "\nMODIFIED: " + m +
+      "\nADDED: " + a);
+ }
 
-  System.out.print("Type the name of the file with the extension\nExample: archivo.src\nType: ");
-  Scanner sc = new Scanner(System.in);
-  this.file_Name = sc.nextLine();
-  this.file = new File(this.file_Name);
+ // .d=45
+
+ // .i
+ protected File SetFile(String fileName) { // Returns an object file that was read from the disk //.m
+  File file = new File(fileName);
+  return file;
+ }
+
+ // .i
+ protected void isValid(String fileName) { // Returns an object file that was read from the disk //.m
+  this.file_Name = fileName;
+  this.file = new File(fileName);
 
   if (isNumeric(this.file_Name)) {
    System.out.println("This is an integer");
@@ -34,14 +62,20 @@ public class MyFile {
    System.out.println("This file it is empty");
    System.exit(1);
   }
-  sc.close();
-  return this.file;
  }
 
+ // .i
  protected String getFilename() {
   return this.file_Name;
  }
 
+ // .i
+ protected File SingleFileNameSet(String filename) { // Returns an object file meant to be read for an scanner
+  this.file = new File(filename);
+  return this.file;
+ }
+
+ // .i
  private boolean isNumeric(String string) {
   if (string == null || string.equals("")) {
    return false;
