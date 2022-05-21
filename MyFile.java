@@ -1,90 +1,56 @@
 
-//This class it's meant to be used in another class called Reader to give it more facilty and better administration program
+//This class it's meant to be used in another class called Reader to give it more facilty and better administration for the program
 // Juan Eduardo Villegas Rios A00826615
 // Creation date 5/8/2022 //.m
-//.b=56
-//.d=2
+//.b=90
+//.d=43
+
 import java.io.File;
 
-//*Things to do - Count every single line of each file then figure out the shit for same name
 public class MyFile {
- protected int t, i, b, d, m, a;
- protected String category;
- protected String file_Name;
- private File file;
-
- MyFile() {
-  this.a = 0;
-  this.t = 0;
-  this.i = 0;
-  this.b = 0;
-  this.d = 0;
-  this.m = 0;
-  this.category = "";
-  this.file_Name = "";
- }
-
- // .i
- protected void print_() { // This function prints the desired output
-  System.out.println(
-    "\nNombre del archivo: " + file_Name + "Category: " + category
-      + "\n--------------------------------------------" +
-      "\nTOTAL: " + t +
-      "\nITEMS: " + i +
-      "\nBASE: " + b +
-      "\nDELETED: " + d +
-      "\nMODIFIED: " + m +
-      "\nADDED: " + a);
- }
-
- // .d=45
-
- // .i
- protected File SetFile(String fileName) { // Returns an object file that was read from the disk //.m
-  File file = new File(fileName);
-  return file;
- }
-
- // .i
- protected void isValid(String fileName) { // Returns an object file that was read from the disk //.m
-  this.file_Name = fileName;
-  this.file = new File(fileName);
-
-  if (isNumeric(this.file_Name)) {
-   System.out.println("This is an integer");
-   System.exit(1);
+  MyFile() {
   }
-  if (!(this.file.exists())) {
-   System.out.println("This file does not exists");
-   System.exit(1);
-  }
-  if (this.file.length() == 0) {
-   System.out.println("This file it is empty");
-   System.exit(1);
-  }
- }
 
- // .i
- protected String getFilename() {
-  return this.file_Name;
- }
+  // .i
+  protected File getFile(String file_Name) { // Returns an object file that was read from the disk //.m
+    File file = new File(file_Name); // .m
 
- // .i
- protected File SingleFileNameSet(String filename) { // Returns an object file meant to be read for an scanner
-  this.file = new File(filename);
-  return this.file;
- }
+    if (isNumeric(file_Name)) {// .m
+      System.out.println("This is an integer");
+      System.exit(1);
+    }
+    if (!(file.exists())) {// .m
+      System.out.println("This file does not exists");
+      System.exit(1);
+    }
+    if (file.length() == 0) {// .m
+      System.out.println("This file it is empty");
+      System.exit(1);
+    }
+    return file;
+  }
 
- // .i
- private boolean isNumeric(String string) {
-  if (string == null || string.equals("")) {
-   return false;
+  // .i
+  protected int isSingleInteger(String data, int xk) {
+    try {
+      xk = Integer.parseInt(data);
+    } catch (NumberFormatException ex) {
+      System.out.println("This is not the format asked");
+      System.exit(1);
+    }
+    return xk;
   }
-  try {
-   int intValue = Integer.parseInt(string);
-   return true;
-  } catch (NumberFormatException e) {
+
+  // .i
+  private boolean isNumeric(String string) {
+    if (string == null || string.equals("")) {
+      return false;
+    }
+    try {
+      int intValue = Integer.parseInt(string);
+      return true;
+    } catch (NumberFormatException e) {
+    }
+    return false;
   }
-  return false;
- }
 }

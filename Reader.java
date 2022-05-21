@@ -1,193 +1,93 @@
 
 //This class it's it's in chaarge of reading the file and printing the calculations
 // Juan Eduardo Villegas Rios A00826615 
-// Creation date 5/8/2022 //.m
-//.b=78
-//.d=8
+// Creation date 5/21/2022 //.m
+//.b=193
+//.d=136
+//.d=12
 import java.util.*;
 import java.io.FileNotFoundException;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.lang.Math;
+import java.text.DecimalFormat;
 
 public class Reader extends MyFile {
-  MyFile files[];
+  private static final DecimalFormat df = new DecimalFormat("0.00000");
+  private int N, xk;
+  private double r2, b1, b0, yk, r;
+  private Vector<Double> x = new Vector<>();
+  private Vector<Double> y = new Vector<>();
 
   Reader() {
-  }
-
-  // .d=92
-  // .i
-  private void writer() throws IOException {
-    int total = 0;
-    File myObj = new File("ConteoLDC.txt");
-    FileWriter myWriter = new FileWriter("ConteoLDC.txt");
-
-    myWriter.write("CLASES BASE:\n");
-    for (int i = 0; i < files.length; i++) {
-      total += files[i].t;
-      if (files[i].category.equals("BASE")) {
-        myWriter
-            .write(files[i].file_Name + ":" + " " + "T=" + files[i].t + ", " + "I=" +
-                files[i].i + ", " + "B="
-                + files[i].b + ", " + "D=" + files[i].d
-                + ", " + "M=" + files[i].m + ", " + "A=" + files[i].a + "\n");
-      }
-    }
-    myWriter.write("--------------------------------------------\n");
-    myWriter.write("CLASES NUEVAS:\n");
-    for (int i = 0; i < files.length; i++) {
-      if (files[i].category.equals("NUEVAS")) {
-        myWriter.write(files[i].file_Name + ":" + " " + "T=" + files[i].t + ", " + "I=" + files[i].i + "\n");
-      }
-    }
-    myWriter.write("--------------------------------------------\n");
-    myWriter.write("CLASES REUSADA:\n");
-    for (int i = 0; i < files.length; i++) {
-      if (files[i].category.equals("REUSADAS")) {
-        myWriter
-            .write(files[i].file_Name + ":" + " " + "T=" + files[i].t + ", " + "I=" + files[i].i
-                + ", " + "B=" + files[i].b + "\n");
-      }
-    }
-    myWriter.write("--------------------------------------------\n");
-    myWriter.write("Total de LDC=" + total + "\n");
-    myWriter.close();
+    this.N = this.xk = 0;
+    this.b0 = this.r = this.r2 = this.b1 = this.yk = 0.0;
   }
 
   // .i
-  private void setNumFiles(int numFiles) {
-    this.files = new MyFile[numFiles];
-    for (int i = 0; i < numFiles; i++) {
-      this.files[i] = new MyFile();
-    }
+  private void printValues() {
+    System.out.println(
+        "\nN = " + N + "\n" +
+            "xk = " + xk + "\n" +
+            "r = " + df.format(r) + "\n" +
+            "r2 = " + df.format(r2) + "\n" +
+            "b0 = " + df.format(b0) + "\n" +
+            "b1 = " + df.format(b1) + "\n" +
+            "yk = " + df.format(yk) + "\n");
   }
+  // .d=19
 
   // .i
-  public void getFiles() throws IOException {
-    // *THIS BLOCK GETTING ALL THE FILES IN THE DIRECTORY
-    String[] pathnames;
-    File f = new File(".");
-    pathnames = f.list();
-    int numFilesDisk = 0;
-    for (String pathname : pathnames) {
-      numFilesDisk++;
-    }
-    // *END OF THE BLOCK
-
-    // *THIS BLOCK GETTING THE FILES FROM THE USER
-    Scanner sc = new Scanner(System.in);
-    System.out.println("How many files are you going to add?");
-    int numFiles = 0;
-    if (sc.hasNextInt()) {
-      numFiles = sc.nextInt();
-      sc.nextLine();
-    } else {
-      System.out.println("This is not a number");
-      System.exit(1);
-    }
-    if (numFiles > numFilesDisk) {
-      System.out.println("You do not have that many files in the directory where is being executed");
-      System.exit(1);
-    }
-    String userfileNames[] = new String[numFiles];
-    for (int i = 0; i < numFiles; i++) {
-      userfileNames[i] = sc.nextLine(); // Asking for name in console
-      isValid(userfileNames[i]); // Checking if they are valid
-      int iend = userfileNames[i].indexOf(".");
-      userfileNames[i] = userfileNames[i].substring(0, iend); // Getting rid off of the extension
-    }
-    sc.close();
-    // *END OF THE BLOCK
-
-    userfileNames = Arrays.stream(userfileNames).distinct().toArray(String[]::new);// Removing duplicates
-    setNumFiles(userfileNames.length);
-    for (int i = 0; i < pathnames.length; i++) {
-      for (int j = 0; j < userfileNames.length; j++) {
-        if (pathnames[i].contains(userfileNames[j])) {
-          read(this.files[j], pathnames[i]);
-        }
-      }
-    }
-    writer();
-  }
-
-  // .d=58
-  // .i
-  public void read(MyFile file, String fileName) { // This function reads the the given input file name and do the
-    int t = 0;
+  private void Arithmetics() {
+    Double xi = (double) 0;
+    Double yi = (double) 0;
+    Double x2 = (double) 0;
+    Double y2 = (double) 0;
+    Double xiyi = (double) 0;
     int i = 0;
-    int b = 0;
-    int d = 0;
-    int m = 0;
-    int a = 0;
-    int no = 0;
+    for (Double element : x) {
+      xi += element;
+      x2 += (Double) Math.pow(element, 2);
+      xiyi += x.get(i) * y.get(i);
+      i++;
+    }
+    for (Double element : y) {
+      yi += element;
+      y2 += (Double) Math.pow(element, 2);
+    }
+    double xavg = xi / N;
+    double yavg = yi / N;
+
+    b1 = ((xiyi) - (N * xavg) * yavg) / ((x2) - (N * (xavg * xavg)));
+    r = ((N * xiyi) - ((xi) * (yi))) / Math.sqrt((N * (x2) - (xi * xi)) * (N * (y2) - (yi) * (yi)));
+    r2 = Math.pow(r, 2);
+    b0 = yavg - (b1) * xavg;
+    yk = (b0 + (b1) * xk);
+    printValues();
+  }
+
+  // .i
+  public void read() { // This function reads the the given input file name and do the
+    boolean first_Line = true;
+    Scanner sc = new Scanner(System.in);
+    System.out.println("Type the name of the file with the extension .txt: ");
+    String file_Name = sc.nextLine();
+    sc.close();
     try {
-      Scanner scanner = new Scanner(SetFile(fileName));
-      boolean comment = false;
+      Scanner scanner = new Scanner(getFile(file_Name));
+      scanner.useDelimiter("[\\s\\(\\),]+");
       while (scanner.hasNextLine()) {
         String data = scanner.nextLine();
         data = data.trim();
-        if (data.startsWith("//") || "".equals(data) || "{".equals(data) || "}".equals(data) || "};".equals(data)) {// .m
-          no++;
+        if (first_Line) {
+          xk = isSingleInteger(data, xk);
+          first_Line = false;
         }
-        if (comment) {
-          no++;
-        }
-        if (data.endsWith("*/")) {
-          no--;
-        }
-        if (data.startsWith("/*")) {
-          comment = true;
-          no++;
-        }
-        if (data.endsWith("*/")) {
-          comment = false;
-          no++;
-        }
-        if (data.contains("//.i")) {
-          i++;
-        }
-        if (data.endsWith("//.m")) {
-          m++;
-        }
-        if (data.contains("//.b=")) {
-          data = data.replaceAll("[\\D]", "");
-          if (!data.isEmpty()) {
-            int number = Integer.parseInt(data);
-            b += number;
-          }
-        }
-        if (data.contains("//.d=")) {
-          data = data.replaceAll("[\\D]", "");
-          if (!data.isEmpty()) {
-            int number = Integer.parseInt(data);
-            d += number;
-          }
-        }
-        t++;
-      }
-      t = t - no;
-      a = t - b + d;
-      scanner.close();
-      file.file_Name = fileName;
-      file.a += a;
-      file.t += t;
-      file.i += i;
-      file.b += b;
-      file.d += d;
-      file.m += m;
-      if (file.b > 0 && (file.m > 0 || file.d > 0 || file.a > 0)) {
-        file.category = "BASE";
-      }
-      if (file.b == 0 && file.m == 0 && file.d == 0 && file.a > 0) {
-        file.category = "NUEVAS";
-      }
-      if (file.b > 0 && file.m == 0 && file.d == 0 && file.a == 0) {
-        file.category = "REUSADAS";
+        N++;
+        x.add(scanner.nextDouble());
+        y.add(scanner.nextDouble());
       }
     } catch (FileNotFoundException e) {
       System.out.println("Uknown error");
     }
+    Arithmetics();
   }
 }
